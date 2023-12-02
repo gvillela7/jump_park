@@ -17,18 +17,29 @@ services:
             - /tmp:/tmp/
         networks:
             - network
-        deploy:
-            resources:
-                limits:
-                    cpus: '0.25'
-                    memory: 250M
-                reservations:
-                    cpus: '0.25'
-                    memory: 250M
+        
         extra_hosts:
             - "host.docker.internal:host-gateway"
         links:
             - redis
+
+    doc:
+        hostname: doc.local.com
+        build:
+            args:
+                user: www-data
+                uid: 1000
+            context: ./
+            dockerfile: ./doc/Dockerfile
+        image: doc
+        container_name: doc
+        restart: unless-stopped
+        working_dir: /opt/app
+        networks:
+            - network
+        
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
 
     nginx:
         image: nginx:1.20-alpine
@@ -38,7 +49,9 @@ services:
             - "80:80"
         volumes:
             - ./api:/var/www/html/api
+            - ./doc:/opt/doc
             - ./conf/nginx/api.conf:/etc/nginx/conf.d/api.conf
+            - ./conf/nginx/doc.conf:/etc/nginx/conf.d/doc.conf
         networks:
             - network
 
