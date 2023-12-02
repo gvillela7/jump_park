@@ -2,11 +2,9 @@
 
 namespace App\Services;
 
-use App\Helpers\HelperFunctions;
-use App\Models\Order;
+
 use App\Models\User;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Hash;
 use Illuminate\Http\Request;
@@ -28,10 +26,15 @@ class ServiceUser
 
     /**
      * @throws JsonException
+     * @throws Exception
      */
     public function getToken($username, $password)
     {
-        return $this->serviceKeycloak->getTokenUser($username, $password);
+        $result = $this->serviceKeycloak->getTokenUser($username, $password);
+        if (property_exists($result, 'access_token')){
+            return $result;
+        }
+        throw new Exception('Invalid username or password!!!');
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateOrderRequest;
+use App\Http\Requests\QueryConsultOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Services\ServiceOrder;
 use Illuminate\Http\JsonResponse;
@@ -18,7 +19,7 @@ class OrderController extends Controller
         $this->serviceOrder = $serviceOrder;
     }
 
-    public function list(Request $request): JsonResponse
+    public function list(QueryConsultOrderRequest $request): JsonResponse
     {
         try {
            $result = [
